@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMW M Series Advanced Presentation</title>
+<style>
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(180deg, #000 0%, #111 100%);
+  color: #fff;
+  overflow-x: hidden;
+}
+header {
+  text-align: center;
+  padding: 50px 0;
+}
+header h1 {
+  font-size: 3rem;
+  color: #0af;
+  text-shadow: 0 0 30px #0af;
+}
+header p {
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.8;
+}
+#hero {
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 50px;
+  flex-wrap: wrap;
+}
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 220px;
+}
+.card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #0af;
+}
+#gallery {
+  padding: 50px;
+  text-align: center;
+}
+#gallery img {
+  width: 300px;
+  margin: 20px;
+  border-radius: 15px;
+  transition: transform 0.3s;
+}
+#gallery img:hover {
+  transform: scale(1.05);
+}
+footer {
+  text-align: center;
+  padding: 30px;
+  background: rgba(0,0,0,0.3);
+  color: #0af;
+}
+canvas {
+  width: 100%;
+  height: 100%;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>BMW M Series Competition</h1>
+  <p>Power Meets Elegance</p>
+</header>
+
+<section id="hero">
+  <canvas id="car3D"></canvas>
+</section>
+
+<section id="features">
+  <h2 style="text-align:center;">Features</h2>
+  <div class="feature-cards">
+    <div class="card">0-100 km/h: 3.8s</div>
+    <div class="card">Engine: V8 Twin Turbo</div>
+    <div class="card">Horsepower: 625 HP</div>
+    <div class="card">Aerodynamic Design</div>
+    <div class="card">Luxury Interior</div>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2>Gallery</h2>
+  <img src="https://cdn.pixabay.com/photo/2018/06/11/14/22/bmw-3463080_1280.jpg" alt="BMW 1">
+  <img src="https://cdn.pixabay.com/photo/2018/06/11/14/23/bmw-3463083_1280.jpg" alt="BMW 2">
+</section>
+
+<footer>
+  <p>&copy; 2025 BMW M Series Competition</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.0/dist/gsap.min.js"></script>
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({canvas: document.querySelector('#car3D'), alpha: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const light = new THREE.DirectionalLight(0x00ffff, 1);
+light.position.set(5,5,5);
+scene.add(light);
+
+// Load BMW 3D model
+const loader = new THREE.GLTFLoader();
+loader.load('https://rawcdn.githack.com/KhronosGroup/glTF-Sample-Models/master/2.0/Buggy/glTF-Binary/Buggy.glb', (gltf) => {
+  const car = gltf.scene;
+  car.scale.set(2,2,2);
+  scene.add(car);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    car.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+}, undefined, function(error){
+  console.error(error);
+});
+
+camera.position.z = 10;
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// GSAP scroll animations
+gsap.from("header h1", {duration: 1, y: -50, opacity:0});
+gsap.from("header p", {duration: 1, y: 50, opacity:0, delay:0.5});
+gsap.from(".card", {duration: 1, y:50, opacity:0, stagger:0.2});
+gsap.from("#gallery img", {duration:1, scale:0.5, opacity:0, stagger:0.2});
+</script>
+
+</body>
+</html>
